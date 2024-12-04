@@ -1,0 +1,132 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Room {
+    private int roomNumber;
+    private boolean isBooked;
+
+    public Room(int roomNumber) {
+        this.roomNumber = roomNumber;
+        this.isBooked = false;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
+    public void bookRoom() {
+        isBooked = true;
+    }
+
+    public void releaseRoom() {
+        isBooked = false;
+    }
+}
+
+class Customer {
+    private String name;
+    private String contact;
+
+    public Customer(String name, String contact) {
+        this.name = name;
+        this.contact = contact;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+}
+
+class HotelManagementSystem {
+    private ArrayList<Room> rooms;
+    private ArrayList<Customer> customers;
+
+    public HotelManagementSystem(int numberOfRooms) {
+        rooms = new ArrayList<>();
+        customers = new ArrayList<>();
+        for (int i = 1; i <= numberOfRooms; i++) {
+            rooms.add(new Room(i));
+        }
+    }
+
+    public void bookRoom(String customerName, String contact) {
+        for (Room room : rooms) {
+            if (!room.isBooked()) {
+                room.bookRoom();
+                customers.add(new Customer(customerName, contact));
+                System.out.println("Room " + room.getRoomNumber() + " booked for " + customerName);
+                return;
+            }
+        }
+        System.out.println("No rooms available.");
+    }
+
+    public void releaseRoom(int roomNumber) {
+        for (Room room : rooms) {
+            if (room.getRoomNumber() == roomNumber && room.isBooked()) {
+                room.releaseRoom();
+                System.out.println("Room " + roomNumber + " has been released.");
+                return;
+            }
+        }
+        System.out.println("Room " + roomNumber + " is not booked.");
+    }
+
+    public void displayAvailableRooms() {
+        System.out.println("Available Rooms:");
+        for (Room room : rooms) {
+            if (!room.isBooked()) {
+                System.out.println("Room Number: " + room.getRoomNumber());
+            }
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        HotelManagementSystem hotel = new HotelManagementSystem(5); // Create a hotel with 5 rooms
+
+        while (true) {
+            System.out.println("\n1. Book Room");
+            System.out.println("2. Release Room");
+            System.out.println("3. Display Available Rooms");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter customer name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter contact number: ");
+                    String contact = scanner.nextLine();
+                    hotel.bookRoom(name, contact);
+                    break;
+                case 2:
+                    System.out.print("Enter room number to release: ");
+                    int roomNumber = scanner.nextInt();
+                    hotel.releaseRoom(roomNumber);
+                    break;
+                case 3:
+                    hotel.displayAvailableRooms();
+                    break;
+                case 4:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
